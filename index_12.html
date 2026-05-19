@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Vintage Booth">
+<meta name="theme-color" content="#a85570">
+
+<title>The Vintage Booth</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--rose:#c9748a;--rose-dark:#a85570;--rose-light:#f5dde4;--rose-pale:#fdf0f3;--blush:#f7e8ec;--sage:#7a9e8e;--sage-light:#d8ece5;--cream:#fdf8f2;--parchment:#f5ece0;--brown:#7a5c44;--gold:#c9a96e;--gold-light:#f5ecd8;--ink:#3a2d2a;--gray:#9e8e88;--border:#e8d8d0;--shadow:0 2px 16px rgba(120,60,80,0.10);--shadow-sm:0 1px 8px rgba(120,60,80,0.07);}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Jost',sans-serif;background:var(--cream);min-height:100vh;max-width:500px;margin:0 auto;color:var(--ink);background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23c9748a' fill-opacity='0.04'%3E%3Cpath d='M30 30c0-5.5 4.5-10 10-10s10 4.5 10 10-4.5 10-10 10-10-4.5-10-10zm-20 0c0-5.5 4.5-10 10-10s10 4.5 10 10-4.5 10-10 10-10-4.5-10-10z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");}
+h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;}
+.header{background:linear-gradient(135deg,#6b2d45 0%,#a85570 50%,#c9748a 100%);color:white;padding:22px 20px 18px;position:sticky;top:0;z-index:50;box-shadow:0 2px 20px rgba(100,30,60,0.25);}
+.header-inner{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
+.header-logo{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;letter-spacing:0.5px;line-height:1;}
+.header-logo span{font-style:italic;font-weight:400;}
+.header-sub{font-size:11px;color:rgba(255,255,255,0.7);margin-top:4px;letter-spacing:1.5px;text-transform:uppercase;}
+.header-btns{display:flex;gap:8px;align-items:center;flex-shrink:0;margin-top:2px;}
+.btn-gold{background:linear-gradient(135deg,#c9a96e,#d4b87a);color:var(--ink);border:none;border-radius:22px;padding:9px 16px;font-weight:600;font-size:13px;cursor:pointer;font-family:'Jost',sans-serif;}
+.btn-ghost{background:rgba(255,255,255,0.15);color:white;border:1px solid rgba(255,255,255,0.3);border-radius:22px;padding:8px 12px;font-size:12px;cursor:pointer;font-family:'Jost',sans-serif;}
+.divider-bar{height:3px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3) 30%,var(--gold) 50%,rgba(255,255,255,0.3) 70%,transparent);margin-top:14px;}
+.sync-bar{background:rgba(0,0,0,0.15);padding:5px 16px;font-size:11px;color:rgba(255,255,255,0.8);display:flex;align-items:center;gap:6px;}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:#7a9e8e;flex-shrink:0;transition:background 0.3s;}
+.sync-dot.syncing{background:var(--gold);animation:pulse 1s infinite;}
+.sync-dot.error{background:#e07070;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.stats-row{display:flex;background:white;border-bottom:1px solid var(--border);}
+.stat{flex:1;padding:14px 6px;text-align:center;border-right:1px solid var(--border);}
+.stat:last-child{border-right:none;}
+.stat-val{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;line-height:1;}
+.stat-lbl{font-size:10px;color:var(--gray);margin-top:3px;letter-spacing:0.8px;text-transform:uppercase;}
+.filter-row{display:flex;gap:8px;padding:14px 16px 0;flex-wrap:wrap;}
+.filter-btn{border:1px solid var(--border);background:white;border-radius:22px;padding:7px 14px;font-size:12px;cursor:pointer;color:var(--gray);font-family:'Jost',sans-serif;transition:all 0.2s;}
+.filter-btn.active{background:var(--rose);color:white;border-color:var(--rose);}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:14px 16px 50px;}
+.card{background:white;border-radius:16px;overflow:hidden;box-shadow:var(--shadow-sm);cursor:pointer;transition:transform 0.18s;border:1px solid var(--border);position:relative;}
+.card:active{transform:scale(0.97);}
+.card.sold{opacity:0.68;}
+.card-img{width:100%;height:132px;object-fit:cover;display:block;}
+.card-img-placeholder{width:100%;height:132px;background:linear-gradient(135deg,var(--blush),var(--parchment));display:flex;align-items:center;justify-content:center;font-size:36px;}
+.card-ribbon{position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--rose-light),var(--rose),var(--rose-light));}
+.card-body{padding:10px 12px 13px;}
+.card-name{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:15px;color:var(--ink);margin-bottom:4px;line-height:1.3;}
+.card-meta{font-size:12px;color:var(--gray);}
+.card-meta.green{color:var(--sage);font-weight:600;}
+.card-loc{font-size:11px;color:var(--brown);background:var(--gold-light);border-radius:6px;padding:2px 6px;display:inline-block;margin-top:4px;}
+.sold-badge{position:absolute;top:10px;right:10px;background:linear-gradient(135deg,var(--sage),#5d8a7a);color:white;font-size:9px;font-weight:600;padding:3px 8px;border-radius:10px;letter-spacing:0.8px;}
+.bundle-badge{position:absolute;top:10px;left:10px;background:linear-gradient(135deg,#8a6a2e,#c9a96e);color:white;font-size:9px;font-weight:600;padding:3px 8px;border-radius:10px;letter-spacing:0.5px;}
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 32px;gap:14px;}
+.empty-icon{font-size:52px;}
+.empty-text{color:var(--gray);text-align:center;line-height:1.7;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;}
+.loading-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 32px;gap:16px;}
+.spinner{width:34px;height:34px;border:3px solid var(--rose-light);border-top-color:var(--rose);border-radius:50%;animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-text{font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--gray);font-size:16px;}
+.page{display:none;}
+.page.active{display:block;min-height:100vh;}
+.page-header{display:flex;align-items:center;gap:12px;padding:15px 18px 13px;background:white;border-bottom:2px solid var(--rose-light);position:sticky;top:0;z-index:40;box-shadow:var(--shadow-sm);}
+.page-title{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--rose-dark);}
+.back-btn{background:none;border:none;color:var(--rose);font-size:14px;cursor:pointer;font-weight:600;padding:0;font-family:'Jost',sans-serif;flex-shrink:0;}
+.form{padding:20px;display:flex;flex-direction:column;gap:5px;padding-bottom:60px;}
+.img-upload{border:2px dashed var(--rose-light);border-radius:16px;overflow:hidden;cursor:pointer;min-height:150px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--rose-pale),var(--parchment));margin-bottom:6px;}
+.img-upload img{width:100%;max-height:220px;object-fit:cover;display:block;}
+.img-placeholder{display:flex;flex-direction:column;align-items:center;gap:8px;padding:22px;}
+.img-placeholder-icon{font-size:36px;}
+.img-placeholder-text{font-size:13px;text-align:center;color:var(--gray);line-height:1.5;}
+.receipt-upload{border:2px dashed #d4b87a;border-radius:16px;overflow:hidden;cursor:pointer;min-height:110px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--gold-light),var(--parchment));margin-bottom:6px;}
+.receipt-upload img{width:100%;max-height:180px;object-fit:cover;display:block;}
+.receipt-placeholder{display:flex;flex-direction:column;align-items:center;gap:8px;padding:18px;}
+.receipt-placeholder-icon{font-size:30px;}
+.receipt-placeholder-text{font-size:13px;text-align:center;color:var(--brown);line-height:1.5;}
+label.lbl{font-size:11px;font-weight:600;color:var(--rose-dark);margin-top:14px;display:block;letter-spacing:1px;text-transform:uppercase;}
+label.lbl-gold{font-size:11px;font-weight:600;color:var(--brown);margin-top:14px;display:block;letter-spacing:1px;text-transform:uppercase;}
+input[type=text],input[type=number],input[type=date],textarea{border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:16px;background:white;outline:none;width:100%;font-family:'Jost',sans-serif;color:var(--ink);-webkit-appearance:none;transition:border-color 0.2s;}
+input:focus,textarea:focus{border-color:var(--rose);}
+textarea{min-height:76px;resize:vertical;}
+.pill-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+.pill{border:1.5px solid var(--border);background:white;border-radius:22px;padding:7px 15px;font-size:12px;cursor:pointer;color:var(--ink);font-family:'Jost',sans-serif;transition:all 0.15s;}
+.pill.active{background:var(--rose);color:white;border-color:var(--rose);}
+.pill-gold.active{background:var(--gold);color:var(--ink);border-color:var(--gold);}
+.bundle-box{background:var(--gold-light);border:1.5px solid var(--gold);border-radius:12px;padding:14px;margin-top:10px;}
+.bundle-hint{font-size:12px;color:var(--brown);line-height:1.6;font-style:italic;}
+.save-btn{background:linear-gradient(135deg,var(--rose-dark),var(--rose));color:white;border:none;border-radius:14px;padding:15px;font-weight:600;font-size:16px;cursor:pointer;margin-top:20px;font-family:'Jost',sans-serif;width:100%;box-shadow:0 4px 16px rgba(160,60,100,0.3);letter-spacing:0.5px;}
+.save-btn:disabled{opacity:0.6;cursor:not-allowed;}
+.detail-body{padding:20px 20px 60px;}
+.detail-img{width:100%;max-height:280px;object-fit:cover;border-radius:16px;margin-bottom:16px;box-shadow:var(--shadow);}
+.detail-no-img{width:100%;height:160px;background:linear-gradient(135deg,var(--blush),var(--parchment));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:52px;margin-bottom:16px;}
+.receipt-thumb{width:100%;max-height:160px;object-fit:cover;border-radius:12px;margin-bottom:16px;box-shadow:var(--shadow-sm);border:2px solid var(--gold-light);cursor:pointer;}
+.receipt-label{font-size:11px;color:var(--brown);letter-spacing:1px;text-transform:uppercase;font-weight:600;margin-bottom:6px;margin-top:-10px;}
+.detail-card{background:white;border-radius:16px;overflow:hidden;margin-bottom:16px;box-shadow:var(--shadow-sm);border:1px solid var(--border);}
+.detail-card-header{background:linear-gradient(135deg,var(--rose-pale),var(--blush));padding:10px 16px;border-bottom:1px solid var(--rose-light);font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:var(--rose-dark);}
+.detail-card-header.gold{background:linear-gradient(135deg,var(--gold-light),var(--parchment));border-bottom-color:#d4b87a;color:var(--brown);}
+.detail-row{display:flex;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);align-items:flex-start;gap:10px;}
+.detail-row:last-child{border-bottom:none;}
+.detail-lbl{font-size:12px;color:var(--gray);flex-shrink:0;}
+.detail-val{font-size:14px;font-weight:600;text-align:right;}
+.sell-btn{width:100%;background:linear-gradient(135deg,var(--sage),#5d8a7a);color:white;border:none;border-radius:14px;padding:15px;font-weight:600;font-size:16px;cursor:pointer;margin-bottom:12px;font-family:'Jost',sans-serif;}
+.delete-btn{width:100%;background:#fdf0f0;color:#c0392b;border:1px solid #f5d5d5;border-radius:14px;padding:12px;font-weight:600;font-size:14px;cursor:pointer;margin-top:8px;font-family:'Jost',sans-serif;}
+.sold-tag{background:linear-gradient(135deg,var(--sage-light),#c8ece3);color:#2a6b56;border-radius:14px;padding:16px;text-align:center;font-weight:600;margin-bottom:16px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;border:1px solid #b8ddd4;}
+.overlay{display:none;position:fixed;inset:0;background:rgba(60,20,30,0.55);z-index:200;align-items:flex-end;justify-content:center;}
+.overlay.open{display:flex;}
+.modal{background:var(--cream);border-radius:24px 24px 0 0;padding:28px 22px 34px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;}
+.modal-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px;}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--rose-dark);margin-bottom:4px;}
+.modal-sub{font-size:13px;color:var(--gray);margin-bottom:18px;}
+.modal-btns{display:flex;gap:10px;margin-top:16px;}
+.cancel-btn{flex:0.5;background:#fdf0f0;color:#c0392b;border:1px solid #f5d5d5;border-radius:12px;padding:13px;font-weight:600;font-size:14px;cursor:pointer;font-family:'Jost',sans-serif;}
+.sheet-page-header{display:flex;align-items:center;justify-content:space-between;padding:15px 18px 13px;background:white;border-bottom:2px solid var(--rose-light);position:sticky;top:0;z-index:40;box-shadow:var(--shadow-sm);gap:10px;}
+.sheet-header-left{display:flex;align-items:center;gap:12px;}
+.download-btn{background:linear-gradient(135deg,#2d7a5a,#3d9e76);color:white;border:none;border-radius:22px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Jost',sans-serif;white-space:nowrap;flex-shrink:0;}
+.sheet-wrap{overflow-x:auto;padding:16px 16px 50px;}
+table{border-collapse:collapse;width:100%;min-width:750px;background:white;border-radius:14px;overflow:hidden;box-shadow:var(--shadow-sm);font-size:13px;border:1px solid var(--border);}
+thead tr{background:linear-gradient(135deg,#6b2d45,#a85570);}
+th{color:white;padding:12px;text-align:left;font-size:11px;font-weight:600;white-space:nowrap;font-family:'Jost',sans-serif;letter-spacing:0.5px;}
+td{padding:11px 12px;color:var(--ink);border-bottom:1px solid var(--border);white-space:nowrap;font-size:13px;}
+tr:nth-child(even) td{background:var(--rose-pale);}
+tfoot tr{background:var(--parchment);}
+tfoot td{font-weight:700;border-bottom:none;}
+.status-badge{border-radius:10px;padding:3px 9px;font-size:11px;font-weight:600;}
+.status-avail{background:var(--gold-light);color:var(--brown);}
+.status-sold{background:var(--sage-light);color:#2a6b56;}
+.loc-badge{border-radius:8px;padding:2px 8px;font-size:11px;font-weight:600;background:var(--gold-light);color:var(--brown);}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:white;padding:10px 20px;border-radius:22px;font-size:13px;z-index:999;opacity:0;transition:opacity 0.3s;pointer-events:none;white-space:nowrap;}
+.toast.show{opacity:1;}
+.img-fullscreen{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:500;align-items:center;justify-content:center;padding:20px;}
+.img-fullscreen.open{display:flex;}
+.img-fullscreen img{max-width:100%;max-height:100%;border-radius:12px;object-fit:contain;}
+.img-fullscreen-close{position:absolute;top:20px;right:20px;background:rgba(255,255,255,0.2);color:white;border:none;border-radius:50%;width:40px;height:40px;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+</style>
+</head>
+<body>
+
+<!-- MAIN -->
+<div id="page-main" class="page active">
+  <div class="header">
+    <div class="header-inner">
+      <div><div class="header-logo">🌸 The <span>Vintage</span> Booth</div><div class="header-sub">✦ Antiques &amp; Treasures ✦</div></div>
+      <div class="header-btns">
+        <button class="btn-ghost" onclick="showPage('expenses')">💸 Expenses</button>
+        <button class="btn-ghost" onclick="showPage('sheet')">📊 Sheet</button>
+        <button class="btn-gold" onclick="showPage('add')">＋ Add Item</button>
+      </div>
+    </div>
+    <div class="divider-bar"></div>
+  </div>
+  <div class="sync-bar"><div class="sync-dot syncing" id="sync-dot"></div><span id="sync-label">Connecting…</span></div>
+  <div class="stats-row">
+    <div class="stat"><div class="stat-val" id="stat-total" style="color:var(--gold)">0</div><div class="stat-lbl">Items</div></div>
+    <div class="stat"><div class="stat-val" id="stat-avail" style="color:var(--rose)">0</div><div class="stat-lbl">For Sale</div></div>
+    <div class="stat"><div class="stat-val" id="stat-sold" style="color:var(--sage)">0</div><div class="stat-lbl">Sold</div></div>
+    <div class="stat"><div class="stat-val" id="stat-profit" style="color:var(--sage)">$0</div><div class="stat-lbl">Profit</div></div>
+  </div>
+  <div class="filter-row">
+    <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+    <button class="filter-btn" onclick="setFilter('available',this)">For Sale</button>
+    <button class="filter-btn" onclick="setFilter('sold',this)">Sold</button>
+    <button class="filter-btn" onclick="setFilter('loc:Booth',this)">📍 Booth</button>
+    <button class="filter-btn" onclick="setFilter('loc:Shedd',this)">🏛 Shedd</button>
+    <button class="filter-btn" onclick="setFilter('loc:Garage',this)">🏠 Garage</button>
+    <button class="filter-btn" onclick="setFilter('loc:Attic',this)">🪜 Attic</button>
+    <button class="filter-btn" onclick="setFilter('loc:Storage Unit',this)">📦 Storage</button>
+    <button class="filter-btn" onclick="setFilter('loc:Sold Elsewhere',this)">🛒 Sold Elsewhere</button>
+  </div>
+  <div id="main-loading" class="loading-screen"><div class="spinner"></div><div class="loading-text">Loading your treasures…</div></div>
+  <div class="grid" id="grid" style="display:none"></div>
+  <div class="empty" id="empty" style="display:none"><div class="empty-icon">🌷</div><div class="empty-text" id="empty-text">No treasures yet, darling!<br>Tap <b>＋ Add Item</b> to begin.</div></div>
+</div>
+
+<!-- ADD -->
+<div id="page-add" class="page">
+  <div class="page-header"><button class="back-btn" onclick="showPage('main')">← Back</button><h2 class="page-title">✦ Add a Treasure</h2></div>
+  <div class="form">
+    <label class="lbl">Item Photo</label>
+    <div class="img-upload" id="img-upload-area" onclick="document.getElementById('file-input').click()">
+      <div class="img-placeholder"><div class="img-placeholder-icon">🌸</div><div class="img-placeholder-text">Tap to photograph your piece</div></div>
+    </div>
+    <input type="file" id="file-input" accept="image/*" capture="environment" style="display:none" onchange="handleImage(this,'item')">
+
+    <label class="lbl-gold">Receipt / Check Photo (optional)</label>
+    <div class="receipt-upload" id="receipt-upload-area" onclick="document.getElementById('receipt-input').click()">
+      <div class="receipt-placeholder"><div class="receipt-placeholder-icon">🧾</div><div class="receipt-placeholder-text">Tap to photograph receipt or check</div></div>
+    </div>
+    <input type="file" id="receipt-input" accept="image/*" capture="environment" style="display:none" onchange="handleImage(this,'receipt')">
+
+    <label class="lbl">Item Name (optional)</label>
+    <input type="text" id="add-name" placeholder="e.g. Victorian oil painting">
+
+    <label class="lbl">Bundle Purchase?</label>
+    <div class="pill-row">
+      <button class="pill active" id="bundle-no" onclick="setBundle(false)">No — single item</button>
+      <button class="pill" id="bundle-yes" onclick="setBundle(true)">Yes — part of a bundle</button>
+    </div>
+    <div id="bundle-box" class="bundle-box" style="display:none">
+      <div class="bundle-hint">💡 <b>Bundle tip:</b> Enter the total you paid for the whole lot. In the Notes field, list all the pieces included. When you sell each piece, you can decide your price — the app will track what you make vs. what the bundle cost overall.</div>
+      <label class="lbl" style="margin-top:12px">Bundle Description (optional)</label>
+      <input type="text" id="add-bundle-desc" placeholder="e.g. Estate sale lot — 6 pieces">
+    </div>
+
+    <label class="lbl">What did you pay? *</label>
+    <input type="number" id="add-paid" placeholder="0.00" inputmode="decimal" step="0.01">
+
+    <label class="lbl">How did you pay?</label>
+    <div class="pill-row" id="buy-pay-pills"></div>
+
+    <label class="lbl">Location</label>
+    <div class="pill-row" id="add-location-pills"></div>
+
+    <label class="lbl">Date Purchased</label>
+    <input type="date" id="add-date">
+
+    <label class="lbl">Notes (optional)</label>
+    <textarea id="add-notes" placeholder="Condition, era, style, bundle pieces included…"></textarea>
+
+    <button class="save-btn" id="save-item-btn" onclick="saveItem()">🌷 Save This Treasure</button>
+  </div>
+</div>
+
+<!-- DETAIL -->
+<div id="page-detail" class="page">
+  <div class="page-header"><button class="back-btn" onclick="showPage('main')">← Back</button><h2 class="page-title" id="detail-title">Details</h2></div>
+  <div class="detail-body" id="detail-body"></div>
+</div>
+
+<!-- SHEET -->
+<div id="page-sheet" class="page">
+  <div class="sheet-page-header">
+    <div class="sheet-header-left"><button class="back-btn" onclick="showPage('main')">← Back</button><h2 class="page-title">📊 Spreadsheet</h2></div>
+    <button class="download-btn" onclick="downloadExcel()">⬇ Excel</button>
+  </div>
+  <div class="sheet-wrap">
+    <table><thead><tr><th>Item</th><th>Location</th><th>Bundle</th><th>Paid</th><th>How Paid</th><th>Date Bought</th><th>Sold For</th><th>Buyer Paid</th><th>Date Sold</th><th>Profit</th><th>Status</th></tr></thead>
+    <tbody id="sheet-body"></tbody><tfoot><tr id="sheet-foot"></tr></tfoot></table>
+  </div>
+</div>
+
+
+<!-- EXPENSES PAGE -->
+<div id="page-expenses" class="page">
+  <div class="page-header">
+    <button class="back-btn" onclick="showPage('main')">← Back</button>
+    <h2 class="page-title">💸 Expenses</h2>
+    <button class="btn-gold" style="margin-left:auto;padding:8px 14px;font-size:13px;" onclick="showPage('add-expense')">＋ Add</button>
+  </div>
+  <div class="stats-row">
+    <div class="stat"><div class="stat-val" id="exp-stat-total" style="color:var(--rose)">$0</div><div class="stat-lbl">Total Spent</div></div>
+    <div class="stat"><div class="stat-val" id="exp-stat-month" style="color:var(--brown)">$0</div><div class="stat-lbl">This Month</div></div>
+    <div class="stat"><div class="stat-val" id="exp-stat-count" style="color:var(--gray)">0</div><div class="stat-lbl">Entries</div></div>
+  </div>
+  <div class="filter-row" id="exp-filter-row">
+    <button class="filter-btn active" onclick="setExpFilter('all',this)">All</button>
+    <button class="filter-btn" onclick="setExpFilter('Gas',this)">⛽ Gas</button>
+    <button class="filter-btn" onclick="setExpFilter('Meals',this)">🍽 Meals</button>
+    <button class="filter-btn" onclick="setExpFilter('Booth Rent',this)">🏪 Rent</button>
+    <button class="filter-btn" onclick="setExpFilter('Supplies',this)">🛍 Supplies</button>
+    <button class="filter-btn" onclick="setExpFilter('Other',this)">Other</button>
+  </div>
+  <div id="exp-loading" class="loading-screen"><div class="spinner"></div><div class="loading-text">Loading expenses…</div></div>
+  <div id="exp-list" style="padding:14px 16px 50px;display:none;flex-direction:column;gap:12px;"></div>
+  <div class="empty" id="exp-empty" style="display:none"><div class="empty-icon">💰</div><div class="empty-text">No expenses yet.<br>Tap <b>＋ Add</b> to record one.</div></div>
+</div>
+
+<!-- ADD EXPENSE PAGE -->
+<div id="page-add-expense" class="page">
+  <div class="page-header"><button class="back-btn" onclick="showPage('expenses')">← Back</button><h2 class="page-title">＋ Add Expense</h2></div>
+  <div class="form">
+    <label class="lbl-gold">Receipt / Proof Photo (optional)</label>
+    <div class="receipt-upload" id="exp-receipt-area" onclick="document.getElementById('exp-receipt-input').click()">
+      <div class="receipt-placeholder"><div class="receipt-placeholder-icon">🧾</div><div class="receipt-placeholder-text">Tap to photo receipt, check, or card statement</div></div>
+    </div>
+    <input type="file" id="exp-receipt-input" accept="image/*" capture="environment" style="display:none" onchange="handleExpReceipt(this)">
+
+    <label class="lbl">Category</label>
+    <div class="pill-row" id="exp-cat-pills"></div>
+
+    <label class="lbl">Amount *</label>
+    <input type="number" id="exp-amount" placeholder="0.00" inputmode="decimal" step="0.01">
+
+    <label class="lbl">Description (optional)</label>
+    <input type="text" id="exp-desc" placeholder="e.g. Gas to estate sale, Lunch at show...">
+
+    <label class="lbl">How Paid</label>
+    <div class="pill-row" id="exp-pay-pills"></div>
+
+    <label class="lbl">Last 4 digits of card (optional)</label>
+    <input type="text" id="exp-card" placeholder="e.g. 4242" maxlength="4" inputmode="numeric">
+
+    <label class="lbl">Date</label>
+    <input type="date" id="exp-date">
+
+    <button class="save-btn" id="save-exp-btn" onclick="saveExpense()">💸 Save Expense</button>
+  </div>
+</div>
+
+<!-- SELL MODAL -->
+<div class="overlay" id="sell-overlay">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h3 class="modal-title">💰 Mark as Sold</h3>
+    <p class="modal-sub" id="sell-modal-sub"></p>
+    <label class="lbl">What did it sell for? *</label>
+    <input type="number" id="sell-price" placeholder="0.00" inputmode="decimal" step="0.01">
+    <label class="lbl">How did they pay?</label>
+    <div class="pill-row" id="sell-pay-pills"></div>
+    <label class="lbl">Date Sold</label>
+    <input type="date" id="sell-date">
+    <div class="modal-btns">
+      <button class="save-btn" style="flex:1;margin-top:0" id="confirm-sell-btn" onclick="confirmSell()">✦ Confirm Sale</button>
+      <button class="cancel-btn" onclick="closeSellModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- IMAGE FULLSCREEN -->
+<div class="img-fullscreen" id="img-fullscreen" onclick="closeFullscreen()">
+  <button class="img-fullscreen-close" onclick="closeFullscreen()">✕</button>
+  <img id="img-fullscreen-img" src="" alt="Receipt">
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPA_URL='https://vjgftwwcioahmalbienj.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZqZ2Z0d3djaW9haG1hbGJpZW5qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNDc4MTYsImV4cCI6MjA5MzkyMzgxNn0.KJgkmaDhEjWcSA7ndBgj0d8pqF9NO8oTHXBp5CDTz4I';
+
+async function sbFetch(path,opts){
+  opts=opts||{};
+  const res=await fetch(SUPA_URL+'/rest/v1/'+path,Object.assign({},opts,{headers:Object.assign({'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':opts.prefer||''},opts.headers||{})}));
+  if(!res.ok){const e=await res.text();throw new Error(e);}
+  const t=await res.text();return t?JSON.parse(t):null;
+}
+async function dbGetAll(){return await sbFetch('items?order=date_added.desc');}
+async function dbInsert(item){return await sbFetch('items',{method:'POST',prefer:'return=representation',body:JSON.stringify(itemToRow(item))});}
+async function dbUpdate(item_id,data){return await sbFetch('items?item_id=eq.'+encodeURIComponent(item_id),{method:'PATCH',prefer:'return=representation',body:JSON.stringify(data)});}
+async function dbDelete(item_id){return await sbFetch('items?item_id=eq.'+encodeURIComponent(item_id),{method:'DELETE'});}
+
+function itemToRow(item){
+  return {item_id:item.id,name:item.name||null,price_paid:parseFloat(item.pricePaid)||null,pay_method:item.payMethod||null,date_purchased:item.datePurchased||null,notes:item.notes||null,image:item.image||null,receipt_image:item.receiptImage||null,status:item.status||'available',price_sold:item.priceSold?parseFloat(item.priceSold):null,sold_pay_method:item.soldPayMethod||null,date_sold:item.dateSold||null,date_added:item.dateAdded||new Date().toISOString(),location:item.location||null,is_bundle:item.isBundle||false,bundle_desc:item.bundleDesc||null};
+}
+function rowToItem(row){
+  return {id:row.item_id,name:row.name||'',pricePaid:row.price_paid,payMethod:row.pay_method,datePurchased:row.date_purchased,notes:row.notes,image:row.image,receiptImage:row.receipt_image,status:row.status||'available',priceSold:row.price_sold,soldPayMethod:row.sold_pay_method,dateSold:row.date_sold,dateAdded:row.date_added,location:row.location,isBundle:row.is_bundle||false,bundleDesc:row.bundle_desc};
+}
+
+const PAY_METHODS=["Cash","Card","Venmo","PayPal","Zelle","Check","Other"];
+const LOCATIONS=["Booth","Shedd","Garage","Attic","Storage Unit","Home","Sold Elsewhere","Other"];
+let items=[],currentFilter='all',currentDetailId=null,sellPayMethod='Cash',buyPayMethod='Cash',addImageData=null,addReceiptData=null,addLocation='Booth',addIsBundle=false;
+
+function setSyncStatus(state,msg){var dot=document.getElementById('sync-dot'),lbl=document.getElementById('sync-label');dot.className='sync-dot'+(state==='syncing'?' syncing':state==='error'?' error':'');lbl.textContent=msg;}
+function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2500);}
+
+async function loadItems(){
+  setSyncStatus('syncing','Loading…');
+  // Always hide loading after 3 seconds no matter what
+  setTimeout(function(){
+    document.getElementById('main-loading').style.display='none';
+    render();
+  }, 3000);
+  try{
+    var rows=await dbGetAll();
+    items=(rows||[]).map(rowToItem);
+    document.getElementById('main-loading').style.display='none';
+    setSyncStatus('ok','✓ Synced across all devices');
+    render();
+  }catch(e){
+    document.getElementById('main-loading').style.display='none';
+    setSyncStatus('error','⚠ '+e.message);
+    console.error('Supabase error:',e);
+    render();
+  }
+}
+
+function todayStr(){return new Date().toISOString().slice(0,10);}
+function money(v){if(v===null||v===undefined||v==='')return'—';return'$'+Number(v).toFixed(2);}
+function moneyNum(v){if(v===null||v===undefined||v==='')return'';return Number(v).toFixed(2);}
+function fmtDate(iso){if(!iso)return'—';return new Date(iso+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
+function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function buildPills(cid,methods,onSelect,def,extraClass){
+  var c=document.getElementById(cid);c.innerHTML='';
+  methods.forEach(function(m){
+    var b=document.createElement('button');
+    b.className='pill'+(extraClass?' '+extraClass:'')+(m===def?' active':'');
+    b.textContent=m;
+    b.onclick=function(){c.querySelectorAll('.pill').forEach(function(p){p.classList.remove('active');});b.classList.add('active');onSelect(m);};
+    c.appendChild(b);
+  });
+}
+
+function setBundle(val){
+  addIsBundle=val;
+  document.getElementById('bundle-no').classList.toggle('active',!val);
+  document.getElementById('bundle-yes').classList.toggle('active',val);
+  document.getElementById('bundle-box').style.display=val?'block':'none';
+}
+
+function showPage(name){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  document.getElementById('page-'+name).classList.add('active');
+  window.scrollTo(0,0);
+  if(name==='main')loadItems();
+  if(name==='sheet')renderSheet();
+  if(name==='add')resetAddForm();
+  if(name==='expenses')loadExpenses();
+  if(name==='add-expense')resetExpForm();
+}
+function showPageDirect(name){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  document.getElementById('page-'+name).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function setFilter(f,btn){
+  currentFilter=f;
+  document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');render();
+}
+
+function render(){
+  var filtered=items.filter(function(i){
+    if(currentFilter==='all')return true;
+    if(currentFilter==='available')return i.status!=='sold';
+    if(currentFilter==='sold')return i.status==='sold';
+    if(currentFilter.startsWith('loc:'))return(i.location||'')===(currentFilter.slice(4));
+    return true;
+  });
+  var grid=document.getElementById('grid'),empty=document.getElementById('empty'),loading=document.getElementById('main-loading');
+  loading.style.display='none';
+  var soldItems=items.filter(function(i){return i.status==='sold';});
+  var profit=soldItems.reduce(function(s,i){return s+(parseFloat(i.priceSold)||0);},0)-soldItems.reduce(function(s,i){return s+(parseFloat(i.pricePaid)||0);},0);
+  document.getElementById('stat-total').textContent=items.length;
+  document.getElementById('stat-avail').textContent=items.filter(function(i){return i.status!=='sold';}).length;
+  document.getElementById('stat-sold').textContent=soldItems.length;
+  var pe=document.getElementById('stat-profit');pe.textContent=(profit<0?'-':'')+'$'+Math.abs(profit).toFixed(2);pe.style.color=profit>=0?'var(--sage)':'#c0392b';
+  if(filtered.length===0){grid.style.display='none';empty.style.display='flex';document.getElementById('empty-text').innerHTML=items.length===0?'No treasures yet, darling!<br>Tap <b>＋ Add Item</b> to begin.':'No items match this filter.';return;}
+  grid.style.display='grid';empty.style.display='none';
+  grid.innerHTML=filtered.map(function(item){
+    return '<div class="card '+(item.status==='sold'?'sold':'')+'" onclick="openDetail(\''+item.id+'\')">'
+      +'<div class="card-ribbon"></div>'
+      +(item.image?'<img class="card-img" src="'+item.image+'" alt="'+esc(item.name)+'">':'<div class="card-img-placeholder">🌸</div>')
+      +'<div class="card-body">'
+      +'<div class="card-name">'+(esc(item.name)||'Unnamed Piece')+'</div>'
+      +'<div class="card-meta">Paid: <b>'+money(item.pricePaid)+'</b></div>'
+      +(item.status==='sold'?'<div class="card-meta green">Sold: '+money(item.priceSold)+'</div>':'')
+      +(item.location?'<div class="card-loc">📍 '+esc(item.location)+'</div>':'')
+      +'</div>'
+      +(item.status==='sold'?'<div class="sold-badge">✓ SOLD</div>':'')
+      +(item.isBundle?'<div class="bundle-badge">📦 Bundle</div>':'')
+      +'</div>';
+  }).join('');
+}
+
+function openDetail(id){
+  var item=items.find(function(i){return i.id===id;});if(!item)return;
+  currentDetailId=id;
+  document.getElementById('detail-title').textContent=item.name||(item.isBundle?'Bundle':'Piece Details');
+  var sold=item.status==='sold';
+  var profit=sold?(parseFloat(item.priceSold)-parseFloat(item.pricePaid)):null;
+  var html='';
+  if(item.image) html+='<img class="detail-img" src="'+item.image+'" alt="'+esc(item.name)+'" onclick="openFullscreen(\''+item.id+'\',\'item\')">';
+  else html+='<div class="detail-no-img">🌸</div>';
+  if(item.receiptImage){
+    html+='<div class="receipt-label">🧾 Receipt / Check</div>';
+    html+='<img class="receipt-thumb" src="'+item.receiptImage+'" alt="Receipt" onclick="openFullscreen(\''+item.id+'\',\'receipt\')">';
+  }
+  html+='<div class="detail-card"><div class="detail-card-header">Purchase Details</div>';
+  html+='<div class="detail-row"><span class="detail-lbl">Item</span><span class="detail-val">'+(esc(item.name)||'Unnamed Piece')+(item.isBundle?' <span style="background:var(--gold-light);color:var(--brown);border-radius:6px;padding:1px 7px;font-size:11px;">Bundle</span>':'')+'</span></div>';
+  if(item.isBundle&&item.bundleDesc) html+='<div class="detail-row"><span class="detail-lbl">Bundle</span><span class="detail-val" style="font-weight:400;font-style:italic;color:var(--gray)">'+esc(item.bundleDesc)+'</span></div>';
+  html+='<div class="detail-row"><span class="detail-lbl">Paid</span><span class="detail-val">'+money(item.pricePaid)+'</span></div>';
+  html+='<div class="detail-row"><span class="detail-lbl">How Paid</span><span class="detail-val">'+(esc(item.payMethod)||'—')+'</span></div>';
+  html+='<div class="detail-row"><span class="detail-lbl">Date Bought</span><span class="detail-val">'+fmtDate(item.datePurchased)+'</span></div>';
+  html+='<div class="detail-row" style="align-items:center;"><span class="detail-lbl">📍 Location</span><div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end;">'+LOCATIONS.map(function(loc){return'<button onclick="updateLocation(''+item.id+'',''+loc+'')"; style="border:1.5px solid '+(item.location===loc?'var(--rose-dark)':'var(--border)')+';background:'+(item.location===loc?'var(--rose-dark)':'white')+';color:'+(item.location===loc?'white':'var(--gray)')+';border-radius:20px;padding:5px 12px;font-size:11px;cursor:pointer;font-family:Jost,sans-serif;font-weight:600;">'+loc+'</button>';}).join('')+'</div></div>';
+  if(item.notes) html+='<div class="detail-row"><span class="detail-lbl">Notes</span><span class="detail-val" style="white-space:pre-wrap;font-weight:400;font-style:italic;color:var(--gray)">'+esc(item.notes)+'</span></div>';
+  html+='</div>';
+  if(sold){
+    html+='<div class="detail-card"><div class="detail-card-header">Sale Details</div>';
+    html+='<div class="detail-row"><span class="detail-lbl">Sold For</span><span class="detail-val" style="color:var(--sage)">'+money(item.priceSold)+'</span></div>';
+    html+='<div class="detail-row"><span class="detail-lbl">Buyer Paid With</span><span class="detail-val">'+(esc(item.soldPayMethod)||'—')+'</span></div>';
+    html+='<div class="detail-row"><span class="detail-lbl">Date Sold</span><span class="detail-val">'+fmtDate(item.dateSold)+'</span></div>';
+    html+='<div class="detail-row"><span class="detail-lbl">Profit</span><span class="detail-val" style="color:'+(profit>=0?'var(--sage)':'#c0392b')+'">'+(profit>=0?'+':'')+money(profit)+'</span></div>';
+    html+='</div>';
+  }
+  html+=sold?'<div class="sold-tag">✨ Congratulations on the sale!</div>':'<button class="sell-btn" onclick="openSellModal()">💰 Mark as Sold</button>';
+  html+='<button class="delete-btn" onclick="deleteItem()">🗑 Remove This Item</button>';
+  document.getElementById('detail-body').innerHTML=html;
+  showPageDirect('detail');
+}
+
+function openFullscreen(id,type){
+  var item=items.find(function(i){return i.id===id;});if(!item)return;
+  var src=type==='receipt'?item.receiptImage:item.image;
+  if(!src)return;
+  document.getElementById('img-fullscreen-img').src=src;
+  document.getElementById('img-fullscreen').classList.add('open');
+}
+function closeFullscreen(){document.getElementById('img-fullscreen').classList.remove('open');}
+
+async function deleteItem(){
+  if(!confirm('Remove this item from your inventory?'))return;
+  try{setSyncStatus('syncing','Removing…');await dbDelete(currentDetailId);items=items.filter(function(i){return i.id!==currentDetailId;});showToast('Item removed');showPage('main');}
+  catch(e){setSyncStatus('error','Error');alert('Could not delete.');}
+}
+
+function resetAddForm(){
+  addImageData=null;addReceiptData=null;addIsBundle=false;addLocation='Booth';
+  ['add-name','add-paid','add-notes','add-bundle-desc'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('add-date').value=todayStr();
+  buyPayMethod='Cash';
+  buildPills('buy-pay-pills',PAY_METHODS,function(m){buyPayMethod=m;},'Cash');
+  buildPills('add-location-pills',LOCATIONS,function(m){addLocation=m;},'Booth');
+  document.getElementById('img-upload-area').innerHTML='<div class="img-placeholder"><div class="img-placeholder-icon">🌸</div><div class="img-placeholder-text">Tap to photograph your piece</div></div>';
+  document.getElementById('receipt-upload-area').innerHTML='<div class="receipt-placeholder"><div class="receipt-placeholder-icon">🧾</div><div class="receipt-placeholder-text">Tap to photograph receipt or check</div></div>';
+  document.getElementById('file-input').value='';
+  document.getElementById('receipt-input').value='';
+  document.getElementById('bundle-box').style.display='none';
+  document.getElementById('bundle-no').classList.add('active');
+  document.getElementById('bundle-yes').classList.remove('active');
+  var btn=document.getElementById('save-item-btn');btn.disabled=false;btn.textContent='🌷 Save This Treasure';
+}
+
+function compressImage(file,cb){
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    var img=new Image();
+    img.onload=function(){
+      var canvas=document.createElement('canvas');var MAX=800;var w=img.width,h=img.height;
+      if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}
+      canvas.width=w;canvas.height=h;canvas.getContext('2d').drawImage(img,0,0,w,h);
+      cb(canvas.toDataURL('image/jpeg',0.75));
+    };img.src=ev.target.result;
+  };reader.readAsDataURL(file);
+}
+
+function handleImage(input,type){
+  var file=input.files[0];if(!file)return;
+  compressImage(file,function(data){
+    if(type==='item'){
+      addImageData=data;
+      document.getElementById('img-upload-area').innerHTML='<img src="'+data+'" style="width:100%;max-height:220px;object-fit:cover;display:block">';
+    } else {
+      addReceiptData=data;
+      document.getElementById('receipt-upload-area').innerHTML='<img src="'+data+'" style="width:100%;max-height:180px;object-fit:cover;display:block">';
+    }
+  });
+}
+
+async function saveItem(){
+  var paid=document.getElementById('add-paid').value;
+  if(!paid){alert('Please enter what you paid for it.');return;}
+  var btn=document.getElementById('save-item-btn');btn.disabled=true;btn.textContent='Saving…';
+  var item={id:Date.now().toString(),name:document.getElementById('add-name').value.trim(),pricePaid:paid,payMethod:buyPayMethod,datePurchased:document.getElementById('add-date').value,notes:document.getElementById('add-notes').value.trim(),image:addImageData,receiptImage:addReceiptData,status:'available',dateAdded:new Date().toISOString(),location:addLocation,isBundle:addIsBundle,bundleDesc:document.getElementById('add-bundle-desc').value.trim()};
+  try{setSyncStatus('syncing','Saving…');await dbInsert(item);showToast('✨ Item saved!');showPage('main');}
+  catch(e){console.error(e);btn.disabled=false;btn.textContent='🌷 Save This Treasure';setSyncStatus('error','Save failed');alert('Could not save. Check connection.');}
+}
+
+async function updateLocation(item_id, loc){
+  try{
+    setSyncStatus('syncing','Saving…');
+    await dbUpdate(item_id,{location:loc});
+    var item=items.find(function(i){return i.id===item_id;});
+    if(item){item.location=loc;}
+    showToast('📍 Location updated!');
+    openDetail(item_id);
+  }catch(e){setSyncStatus('error','Error');alert('Could not update location.');}
+}
+function openSellModal(){
+  var item=items.find(function(i){return i.id===currentDetailId;});if(!item)return;
+  document.getElementById('sell-modal-sub').textContent=(item.name||'This piece')+' — you paid '+money(item.pricePaid);
+  document.getElementById('sell-price').value='';document.getElementById('sell-date').value=todayStr();
+  sellPayMethod='Cash';buildPills('sell-pay-pills',PAY_METHODS,function(m){sellPayMethod=m;},'Cash');
+  document.getElementById('sell-overlay').classList.add('open');
+}
+function closeSellModal(){document.getElementById('sell-overlay').classList.remove('open');}
+
+async function confirmSell(){
+  var price=document.getElementById('sell-price').value;if(!price){alert('Please enter what it sold for.');return;}
+  var btn=document.getElementById('confirm-sell-btn');btn.disabled=true;btn.textContent='Saving…';
+  try{setSyncStatus('syncing','Saving sale…');await dbUpdate(currentDetailId,{status:'sold',price_sold:parseFloat(price),sold_pay_method:sellPayMethod,date_sold:document.getElementById('sell-date').value});showToast('💰 Sale recorded!');closeSellModal();btn.disabled=false;btn.textContent='✦ Confirm Sale';showPage('main');}
+  catch(e){btn.disabled=false;btn.textContent='✦ Confirm Sale';setSyncStatus('error','Save failed');alert('Could not save sale.');}
+}
+
+function renderSheet(){
+  var body=document.getElementById('sheet-body');var tAllPaid=0,tSoldRevenue=0,tSoldCost=0;
+  body.innerHTML=items.map(function(item){
+    var sold=item.status==='sold';
+    var profit=sold?(parseFloat(item.priceSold)||0)-(parseFloat(item.pricePaid)||0):null;
+    tAllPaid+=parseFloat(item.pricePaid)||0;
+    if(sold){tSoldRevenue+=parseFloat(item.priceSold)||0;tSoldCost+=parseFloat(item.pricePaid)||0;}
+    var thumb=item.image?'<img src="'+item.image+'" style="width:34px;height:34px;object-fit:cover;border-radius:6px;vertical-align:middle;margin-right:8px;border:1px solid #e8d8d0;">':'<span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;background:linear-gradient(135deg,#f7e8ec,#f5ece0);border-radius:6px;margin-right:8px;font-size:16px;">🌸</span>';
+    var nameCell='<span onclick="openDetail(\''+item.id+'\');showPageDirect(\'detail\');" style="cursor:pointer;display:inline-flex;align-items:center;">'+thumb+'<span style="color:#a85570;text-decoration:underline;text-underline-offset:2px;font-weight:600;">'+(esc(item.name)||'Unnamed Piece')+'</span></span>';
+    var locBadge='<span class="loc-badge">'+(item.location||'—')+'</span>';
+    var bundleCell=item.isBundle?'<span style="background:var(--gold-light);color:var(--brown);border-radius:8px;padding:2px 8px;font-size:11px;font-weight:600;">📦 Bundle</span>':'—';
+    return'<tr><td>'+nameCell+'</td><td>'+locBadge+'</td><td>'+bundleCell+'</td><td>'+money(item.pricePaid)+'</td><td>'+(esc(item.payMethod)||'—')+'</td><td>'+fmtDate(item.datePurchased)+'</td><td style="color:'+(sold?'var(--sage)':'inherit')+'">'+(sold?money(item.priceSold):'—')+'</td><td>'+(sold?(esc(item.soldPayMethod)||'—'):'—')+'</td><td>'+fmtDate(item.dateSold)+'</td><td style="color:'+(profit!==null?(profit>=0?'var(--sage)':'#c0392b'):'inherit')+'">'+(profit!==null?(profit>=0?'+':'')+money(profit):'—')+'</td><td><span class="status-badge '+(sold?'status-sold':'status-avail')+'">'+(sold?'Sold':'For Sale')+'</span></td></tr>';
+  }).join('');
+  var tProfit=tSoldRevenue-tSoldCost;
+  document.getElementById('sheet-foot').innerHTML='<td><b>Totals</b></td><td></td><td></td><td><b>'+money(tAllPaid)+'</b></td><td colspan="2"></td><td style="color:var(--sage)"><b>'+money(tSoldRevenue)+'</b></td><td colspan="2"></td><td style="color:'+(tProfit>=0?'var(--sage)':'#c0392b')+'"><b>'+(tProfit>=0?'+':'')+money(tProfit)+'</b></td><td></td>';
+}
+
+function downloadExcel(){
+  var headers=['Item','Location','Bundle','Paid','How Paid','Date Bought','Sold For','Buyer Payment','Date Sold','Profit','Status'];
+  var rows=items.map(function(item){var sold=item.status==='sold';var profit=sold?((parseFloat(item.priceSold)||0)-(parseFloat(item.pricePaid)||0)):null;return[item.name||'',item.location||'',item.isBundle?'Bundle':'',moneyNum(item.pricePaid),item.payMethod||'',item.datePurchased||'',sold?moneyNum(item.priceSold):'',sold?(item.soldPayMethod||''):'',item.dateSold||'',profit!==null?profit.toFixed(2):'',sold?'Sold':'For Sale'];});
+  var tP=0,tS=0,tSC=0;items.forEach(function(i){tP+=parseFloat(i.pricePaid)||0;if(i.status==='sold'){tS+=parseFloat(i.priceSold)||0;tSC+=parseFloat(i.pricePaid)||0;}});
+  rows.push(['TOTALS','','',tP.toFixed(2),'','',tS.toFixed(2),'',(tS-tSC).toFixed(2),'','']);
+  var csv=[headers].concat(rows).map(function(r){return r.map(function(c){return'"'+String(c).replace(/"/g,'""')+'"';}).join(',');}).join('\n');
+  var blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='VintageBooth_'+new Date().toISOString().slice(0,10)+'.csv';a.click();
+  showToast('📥 Downloaded!');
+}
+
+
+// ── EXPENSES ──
+const EXP_CATS=['Gas','Meals','Booth Rent','Supplies','Booth Fees','Mileage','Other'];
+let expenses=[], expFilter='all', expReceiptData=null, expPayMethod='Cash', expCat='Gas';
+
+async function loadExpenses(){
+  setSyncStatus('syncing','Loading…');
+  try{
+    var rows=await sbFetch('expenses?order=date.desc');
+    expenses=(rows||[]);
+    setSyncStatus('ok','✓ Synced');
+    renderExpenses();
+  }catch(e){setSyncStatus('error','⚠ Error');console.error(e);renderExpenses();}
+}
+
+function setExpFilter(f,btn){
+  expFilter=f;
+  document.querySelectorAll('#exp-filter-row .filter-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  renderExpenses();
+}
+
+function renderExpenses(){
+  var loading=document.getElementById('exp-loading');
+  var list=document.getElementById('exp-list');
+  var empty=document.getElementById('exp-empty');
+  loading.style.display='none';
+
+  var filtered=expenses.filter(function(e){return expFilter==='all'||e.category===expFilter;});
+
+  // Stats
+  var total=expenses.reduce(function(s,e){return s+(parseFloat(e.amount)||0);},0);
+  var now=new Date(); var thisMonth=expenses.filter(function(e){if(!e.date)return false;var d=new Date(e.date+'T12:00:00');return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();});
+  var monthTotal=thisMonth.reduce(function(s,e){return s+(parseFloat(e.amount)||0);},0);
+  document.getElementById('exp-stat-total').textContent='$'+total.toFixed(2);
+  document.getElementById('exp-stat-month').textContent='$'+monthTotal.toFixed(2);
+  document.getElementById('exp-stat-count').textContent=expenses.length;
+
+  if(filtered.length===0){list.style.display='none';empty.style.display='flex';return;}
+  empty.style.display='none';
+  list.style.display='flex';
+
+  var catIcons={'Gas':'⛽','Meals':'🍽','Booth Rent':'🏪','Supplies':'🛍','Booth Fees':'🏷','Mileage':'🚗','Other':'💼'};
+  list.innerHTML=filtered.map(function(exp){
+    return '<div class="detail-card" style="margin-bottom:0;">'
+      +(exp.receipt_image?'<img src="'+exp.receipt_image+'" style="width:100%;max-height:140px;object-fit:cover;border-radius:14px 14px 0 0;cursor:pointer;" onclick="openExpFullscreen(''+exp.id+'')">':'')
+      +'<div style="padding:12px 16px;">'
+      +'<div style="display:flex;justify-content:space-between;align-items:flex-start;">'
+      +'<div>'
+      +'<div style="font-family:Cormorant Garamond,serif;font-size:17px;font-weight:600;color:var(--ink);">'+(catIcons[exp.category]||'💼')+' '+(exp.description||exp.category)+'</div>'
+      +'<div style="font-size:12px;color:var(--gray);margin-top:3px;">'+fmtDate(exp.date)+(exp.pay_method?' · '+exp.pay_method:'')+(exp.card_last4?' · ****'+exp.card_last4:'')+'</div>'
+      +'<div style="margin-top:5px;"><span style="background:var(--gold-light);color:var(--brown);border-radius:8px;padding:2px 9px;font-size:11px;font-weight:600;">'+exp.category+'</span></div>'
+      +'</div>'
+      +'<div style="text-align:right;">'
+      +'<div style="font-family:Cormorant Garamond,serif;font-size:20px;font-weight:700;color:var(--rose-dark);">$'+Number(exp.amount).toFixed(2)+'</div>'
+      +'<button onclick="deleteExpense(''+exp.id+'')" style="background:none;border:none;color:var(--gray);cursor:pointer;font-size:13px;margin-top:4px;">🗑 Remove</button>'
+      +'</div>'
+      +'</div>'
+      +'</div></div>';
+  }).join('');
+}
+
+function openExpFullscreen(id){
+  var exp=expenses.find(function(e){return e.id===id;});
+  if(!exp||!exp.receipt_image)return;
+  document.getElementById('img-fullscreen-img').src=exp.receipt_image;
+  document.getElementById('img-fullscreen').classList.add('open');
+}
+
+function handleExpReceipt(input){
+  var file=input.files[0];if(!file)return;
+  compressImage(file,function(data){
+    expReceiptData=data;
+    document.getElementById('exp-receipt-area').innerHTML='<img src="'+data+'" style="width:100%;max-height:180px;object-fit:cover;display:block">';
+  });
+}
+
+function resetExpForm(){
+  expReceiptData=null; expPayMethod='Cash'; expCat='Gas';
+  ['exp-amount','exp-desc','exp-card'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('exp-date').value=todayStr();
+  document.getElementById('exp-receipt-area').innerHTML='<div class="receipt-placeholder"><div class="receipt-placeholder-icon">🧾</div><div class="receipt-placeholder-text">Tap to photo receipt, check, or card statement</div></div>';
+  document.getElementById('exp-receipt-input').value='';
+  buildPills('exp-cat-pills',EXP_CATS,function(m){expCat=m;},'Gas');
+  buildPills('exp-pay-pills',PAY_METHODS,function(m){expPayMethod=m;},'Cash');
+  var btn=document.getElementById('save-exp-btn');btn.disabled=false;btn.textContent='💸 Save Expense';
+}
+
+async function saveExpense(){
+  var amount=document.getElementById('exp-amount').value;
+  if(!amount){alert('Please enter the amount.');return;}
+  var btn=document.getElementById('save-exp-btn');btn.disabled=true;btn.textContent='Saving…';
+  var exp={id:Date.now().toString(),category:expCat,amount:parseFloat(amount),description:document.getElementById('exp-desc').value.trim(),pay_method:expPayMethod,card_last4:document.getElementById('exp-card').value.trim(),date:document.getElementById('exp-date').value,receipt_image:expReceiptData,date_added:new Date().toISOString()};
+  try{
+    await sbFetch('expenses',{method:'POST',prefer:'return=representation',body:JSON.stringify(exp)});
+    showToast('💸 Expense saved!');
+    showPage('expenses');
+  }catch(e){console.error(e);btn.disabled=false;btn.textContent='💸 Save Expense';alert('Could not save. Check connection.');}
+}
+
+async function deleteExpense(id){
+  if(!confirm('Remove this expense?'))return;
+  try{
+    await sbFetch('expenses?id=eq.'+encodeURIComponent(id),{method:'DELETE'});
+    expenses=expenses.filter(function(e){return e.id!==id;});
+    showToast('Expense removed');
+    renderExpenses();
+  }catch(e){alert('Could not delete.');}
+}
+
+document.getElementById('sell-overlay').addEventListener('click',function(e){if(e.target===this)closeSellModal();});
+loadItems();
+</script>
+</body>
+</html>
